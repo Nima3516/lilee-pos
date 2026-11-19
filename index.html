@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lilee POS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ffffff;--surface:#ffffff;--ink:#3b2a1e;--muted:#8a7566;--line:#efe7de;--accent:#7a4b2a;--accent-ink:#ffffff;--chip:#f8f2ec;--ok:#3d7a4f;--bad:#b8402f;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "DM Sans",system-ui,sans-serif}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header{display:flex;align-items:center;gap:20px;padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{font:700 26px "Bricolage Grotesque",Georgia,serif;letter-spacing:-.02em;color:var(--accent)}
+nav{display:flex;gap:4px;margin-left:auto}
+nav button{border:0;background:none;padding:8px 16px;border-radius:999px;color:var(--muted);font-weight:500}
+nav button.on{background:var(--accent);color:var(--accent-ink)}
+main{padding:20px;max-width:1280px;margin:0 auto}
+.sell{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+@media(max-width:900px){.sell{grid-template-columns:1fr}}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.tools input[type=search]{flex:1;min-width:180px}
+input,select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:0;background:var(--chip);padding:6px 14px;border-radius:999px;font-weight:500}
+.chip.on{background:var(--ink);color:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.card{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;min-height:118px}
+.card:hover:not(:disabled){border-color:var(--accent)}
+.card:disabled{opacity:.5;cursor:not-allowed}
+.card b{font-weight:700}.card .cat{color:var(--muted);font-size:13px}
+.card .pr{margin-top:auto;font:700 17px "Bricolage Grotesque",sans-serif}
+.low{color:var(--bad);font-size:13px}.ok{color:var(--muted);font-size:13px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;position:sticky;top:12px}
+h2{font:700 20px "Bricolage Grotesque",sans-serif;margin:0 0 12px}
+.line{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.line small{color:var(--muted);display:block}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--surface)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.row.total{font:700 22px "Bricolage Grotesque",sans-serif;padding-top:10px;border-top:1px solid var(--line);margin-top:6px}
+.btn{border:0;border-radius:12px;padding:12px 16px;background:var(--accent);color:var(--accent-ink);font-weight:700;width:100%}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:var(--chip);color:var(--ink)}
+.btn.sm{width:auto;padding:6px 12px;font-size:13px}
+.seg{display:flex;gap:6px;margin:10px 0}
+.seg button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+.seg button.on{border-color:var(--accent);background:var(--chip);font-weight:700}
+.disc{display:flex;gap:6px;margin:10px 0}.disc input{flex:1}
+.empty{color:var(--muted);padding:18px 0;text-align:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat span{color:var(--muted);font-size:13px}.stat b{display:block;font:700 24px "Bricolage Grotesque",sans-serif}
+.wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+th{color:var(--muted);font-weight:500;font-size:13px}
+td input[type=number]{width:72px;padding:6px 8px}
+.sz{display:inline-flex;align-items:center;gap:4px;margin:2px 10px 2px 0}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0 22px;align-items:end}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+dialog{border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--ink);padding:22px;width:min(380px,92vw)}
+dialog::backdrop{background:rgba(30,20,12,.55)}
+.sizes{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.sizes button{min-width:64px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:700}
+.sizes button:disabled{opacity:.35;cursor:not-allowed}
+.sizes small{display:block;font-weight:400;color:var(--muted)}
+.rcpt{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+.rcpt h3{font:700 22px "Bricolage Grotesque",sans-serif;text-align:center;margin:0}
+.rcpt p{text-align:center;margin:2px 0 12px;color:var(--muted)}
+.link{background:none;border:0;color:var(--bad);padding:0}
+@media print{header,main{display:none}dialog{border:0}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Lilee</div><div id="who" style="display:flex;gap:8px;align-items:center"></div>
+  <nav id="nav">
+    <button data-v="sell">Sell</button><button data-v="stock">Stock</button><button data-v="sales">Sales</button>
+  </nav>
+</header>
+<main id="main"></main>
+<dialog id="dlg"></dialog>
+
+<script>
+const SEED=[
+['Linen shirt','Tops',3500,{S:5,M:8,L:6,XL:3}],['Ribbed tank','Tops',1800,{S:10,M:12,L:8}],
+['Wrap dress','Dresses',6900,{S:4,M:6,L:4}],['Slip skirt','Dresses',4200,{S:5,M:5,L:3}],
+['Wide-leg trousers','Bottoms',5200,{S:6,M:7,L:5,XL:2}],['Denim shorts','Bottoms',3900,{S:5,M:6,L:4}],
+['Knit cardigan','Outerwear',7500,{S:3,M:5,L:3}],['Canvas tote','Accessories',1500,{One:15}],['Silk scarf','Accessories',2200,{One:9}]];
+let S={products:[],sales:[],cur:'Rs',tax:0,next:1};
+let cust={n:'',p:''},cart=[],disc={t:'%',v:0},method='Cash',view='sell',cat='All',q='',tendered='';
+try{const r=localStorage.getItem('lilee-pos');if(r)S=JSON.parse(r)}catch(e){}
+if(!S.products||!S.products.length){S.products=SEED.map((p,i)=>({id:i+1,name:p[0],cat:p[1],price:p[2],stock:p[3]}));S.next=100;S.sales=S.sales||[]}
+S.shop=Object.assign({name:'Lilee',addr:'',phone:'',note:'Thank you for shopping at Lilee.'},S.shop);S.log=S.log||[];S.low=S.low||3;S.pin=S.pin||'';let role=S.pin?'cashier':'owner';
+const save=()=>{try{localStorage.setItem('lilee-pos',JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>S.cur+' '+Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const total=p=>Object.values(p.stock).reduce((a,b)=>a+b,0);
+const inCart=(id,sz)=>cart.filter(c=>c.id===id&&c.size===sz).reduce((a,c)=>a+c.qty,0);
+
+function totals(){
+  const sub=cart.reduce((a,c)=>a+c.price*c.qty,0);
+  const d=disc.t==='%'?sub*Math.min(disc.v,100)/100:Math.min(disc.v,sub);
+  const tax=(sub-d)*S.tax/100;
+  return{sub,d,tax,total:sub-d+tax};
+}
+
+function render(){
+  if(role!=='owner'&&view==='stock')view='sell';
+  document.querySelectorAll('#nav button').forEach(b=>{b.classList.toggle('on',b.dataset.v===view);b.hidden=b.dataset.v==='stock'&&role!=='owner'});
+  $('#who').innerHTML=S.pin?(role==='owner'?'<span class="ok">Owner mode</span> <button class="btn ghost sm" data-lock>Lock</button>':'<span class="ok">Cashier mode</span> <button class="btn ghost sm" data-unlock>Owner login</button>'):'<span class="low">No owner PIN set: anyone can edit stock (Stock tab, Owner PIN)</span>';
+  $('#main').innerHTML=view==='sell'?sellView():view==='stock'?stockView():salesView();
+  if(view==='sell'){renderGrid();renderCart()}
+}
+
+function sellView(){
+  const cats=['All',...new Set(S.products.map(p=>p.cat))];
+  return `<div class="sell"><section>
+    <div class="tools"><input type="search" id="q" placeholder="Search items" value="${esc(q)}" aria-label="Search items"></div>
+    <div class="chips">${cats.map(c=>`<button class="chip ${c===cat?'on':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+    <div class="grid" id="grid"></div></section>
+    <aside class="panel" id="cart"></aside></div>`;
+}
+
+function renderGrid(){
+  const list=S.products.filter(p=>(cat==='All'||p.cat===cat)&&p.name.toLowerCase().includes(q.toLowerCase()));
+  $('#grid').innerHTML=list.length?list.map(p=>{const t=total(p);
+    return `<button class="card" data-pick="${p.id}" ${t<1?'disabled':''}><b>${esc(p.name)}</b><span class="cat">${esc(p.cat)}</span>
+    <span class="${t<4?'low':'ok'}">${t<1?'Sold out':t+' in stock'}</span><span class="pr">${fmt(p.price)}</span></button>`}).join(''):'<div class="empty">No items match. Add products in the Stock tab.</div>';
+}
+
+function renderCart(){
+  const t=totals();
+  $('#cart').innerHTML=`<h2>Current sale</h2>
+  ${cart.length?cart.map((c,i)=>`<div class="line"><div>${esc(c.name)}<small>${c.size==='One'?'One size':'Size '+esc(c.size)} · ${fmt(c.price)}</small></div>
+    <div class="qty"><button data-dec="${i}" aria-label="Remove one">−</button>${c.qty}<button data-inc="${i}" aria-label="Add one">+</button></div>
+    <button class="link" data-del="${i}">Remove</button></div>`).join(''):'<div class="empty">Tap an item to add it to the sale.</div>'}
+  <div class="disc"><input id="cn" placeholder="Customer name (optional)" value="${esc(cust.n)}" aria-label="Customer name"><input id="cp" placeholder="Phone" value="${esc(cust.p)}" aria-label="Customer phone"></div>
+  <div class="disc"><select id="dt" aria-label="Discount type"><option value="%" ${disc.t==='%'?'selected':''}>Discount %</option><option value="amt" ${disc.t==='amt'?'selected':''}>Discount ${esc(S.cur)}</option></select>
+    <input type="number" id="dv" min="0" value="${disc.v||''}" placeholder="0" aria-label="Discount value"></div>
+  <div class="row"><span>Subtotal</span><span>${fmt(t.sub)}</span></div>
+  ${t.d?`<div class="row"><span>Discount</span><span>−${fmt(t.d)}</span></div>`:''}
+  ${S.tax?`<div class="row"><span>Tax (${S.tax}%)</span><span>${fmt(t.tax)}</span></div>`:''}
+  <div class="row total"><span>Total</span><span>${fmt(t.total)}</span></div>
+  <div class="seg"><button data-m="Cash" class="${method==='Cash'?'on':''}">Cash</button><button data-m="Card" class="${method==='Card'?'on':''}">Card</button></div>
+  ${method==='Cash'?`<div class="disc"><input type="number" id="tn" min="0" placeholder="Cash received" value="${tendered}" aria-label="Cash received"></div>
+  <div class="row"><span>Change</span><b id="chg">${fmt(Math.max(0,(+tendered||0)-t.total))}</b></div>`:''}
+  <div style="display:flex;gap:8px;margin-top:12px"><button class="btn ghost" data-clear ${cart.length?'':'disabled'}>Clear</button>
+  <button class="btn" data-pay ${cart.length?'':'disabled'}>Complete sale and bill</button></div>`;
+}
+
+function stockView(){
+  return `<h2>Owner PIN</h2><div class="form"><label>${S.pin?'New PIN':'Choose a PIN'} (4 or more digits)<input id="pin" type="password" inputmode="numeric" autocomplete="off"></label><button class="btn" data-setpin>${S.pin?'Change PIN':'Set PIN'}</button></div>
+  <h2>Shop settings</h2>
+  <div class="form"><label>Currency label<input id="cur" value="${esc(S.cur)}"></label>
+  <label>Tax rate (%)<input id="tax" type="number" min="0" step="0.1" value="${S.tax}"></label>
+  <label>Low stock alert at<input id="low" type="number" min="0" value="${S.low}"></label>
+  <label>Shop name on bill<input id="sn" value="${esc(S.shop.name)}"></label><label>Address<input id="sa" value="${esc(S.shop.addr)}"></label>
+  <label>Phone<input id="sp" value="${esc(S.shop.phone)}"></label><label>Bill footer note<input id="sf" value="${esc(S.shop.note)}"></label></div>
+  ${(()=>{const l=[];S.products.forEach(p=>Object.entries(p.stock).forEach(([s,n])=>{if(n<=S.low)l.push(esc(p.name)+' '+esc(s)+': '+n)}));return l.length?`<div class="panel" style="position:static;margin-bottom:18px"><b>Low stock</b><div class="low">${l.join(', ')}</div></div>`:''})()}
+  <h2>Receive stock</h2><div class="form"><label>Item<select id="rp">${S.products.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></label>
+  <label>Size<select id="rs">${sizeOpts((S.products[0]||{}).id)}</select></label><label>Quantity received<input id="rq" type="number" min="1"></label>
+  <label>Note (supplier, invoice no.)<input id="rn"></label><button class="btn" data-recv>Add to stock</button></div>
+  <h2>Add a product</h2>
+  <div class="form"><label>Name<input id="nn"></label><label>Category<input id="nc" placeholder="Tops" list="cl"></label>
+  <label>Price<input id="np" type="number" min="0"></label><label>Sizes (comma separated)<input id="ns" value="S,M,L"></label>
+  <label>Starting qty per size<input id="nq" type="number" min="0" value="5"></label><button class="btn" data-add>Add product</button></div>
+  <datalist id="cl">${[...new Set(S.products.map(p=>p.cat))].map(c=>`<option value="${esc(c)}">`).join('')}</datalist>
+  <h2>Inventory</h2><div class="wrap"><table><thead><tr><th>Item</th><th>Price</th><th>Stock by size</th><th></th></tr></thead><tbody>
+  ${S.products.map(p=>`<tr><td><b>${esc(p.name)}</b><br><span class="ok">${esc(p.cat)}</span></td>
+  <td><input type="number" min="0" data-price="${p.id}" value="${p.price}" aria-label="Price"></td>
+  <td>${Object.entries(p.stock).map(([s,n])=>`<label class="sz">${esc(s)} <input type="number" min="0" data-st="${p.id}|${esc(s)}" value="${n}"></label>`).join('')}</td>
+  <td><button class="link" data-rm="${p.id}">Delete</button></td></tr>`).join('')}</tbody></table></div>
+  <h2 style="margin-top:22px">Stock movements</h2>${S.log.length?`<div class="wrap"><table><thead><tr><th>Time</th><th>Item</th><th>Change</th><th>Reason</th></tr></thead><tbody>${[...S.log].reverse().slice(0,40).map(l=>`<tr><td>${new Date(l.t).toLocaleString([], {dateStyle:'medium',timeStyle:'short'})}</td><td>${esc(l.name)} (${esc(l.size)})</td><td>${l.qty>0?'+':''}${l.qty}</td><td>${esc(l.why)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Stock changes will be listed here.</div>'}`;
+}
+
+function salesView(){
+  const today=new Date().toDateString();
+  const own=role==='owner';
+  const ts=S.sales.filter(s=>new Date(s.t).toDateString()===today&&!s.void);
+  const sum=a=>a.reduce((x,s)=>x+s.total,0);
+  const cash=sum(ts.filter(s=>s.method==='Cash')),card=sum(ts.filter(s=>s.method==='Card'));
+  const items=ts.reduce((a,s)=>a+s.items.reduce((x,i)=>x+i.qty,0),0);
+  return `<h2>${own?'Today':'Today’s bills'}</h2><div class="stats" ${own?'':'hidden'}>
+  <div class="stat"><span>Revenue</span><b>${fmt(sum(ts))}</b></div><div class="stat"><span>Sales</span><b>${ts.length}</b></div>
+  <div class="stat"><span>Items sold</span><b>${items}</b></div><div class="stat"><span>Cash</span><b>${fmt(cash)}</b></div>
+  <div class="stat"><span>Card</span><b>${fmt(card)}</b></div></div>
+  <h2>Sales history</h2>${S.sales.length?`<div class="wrap"><table><thead><tr><th>Receipt</th><th>Time</th><th>Items</th><th>Payment</th><th>Total</th><th></th></tr></thead><tbody>
+  ${[...S.sales].filter(s=>own||new Date(s.t).toDateString()===today).reverse().slice(0,100).map(s=>`<tr><td>#${s.no}${s.void?' <span class="low">Voided</span>':''}<br><span class="ok">${esc(s.cust&&s.cust.n||'')}</span></td><td>${new Date(s.t).toLocaleString([], {dateStyle:'medium',timeStyle:'short'})}</td>
+  <td>${s.items.reduce((a,i)=>a+i.qty,0)}</td><td>${s.method}</td><td>${fmt(s.total)}</td><td><button class="btn ghost sm" data-rc="${s.no}">View bill</button> ${s.void||!own?'':`<button class="link" data-vd="${s.no}">Void</button>`}</td></tr>`).join('')}</tbody></table></div>
+  <p style="margin-top:14px" ${own?'':'hidden'}><button class="link" data-wipe>Clear sales history</button></p>`:'<div class="empty">No sales yet. Completed sales appear here.</div>'}`;
+}
+
+function pick(id){
+  const p=S.products.find(x=>x.id===id),keys=Object.keys(p.stock);
+  if(keys.length===1)return addItem(p,keys[0]);
+  const d=$('#dlg');
+  d.innerHTML=`<h2>${esc(p.name)}</h2><div>Choose a size</div><div class="sizes">${keys.map(k=>{const left=p.stock[k]-inCart(id,k);
+  return `<button data-size="${esc(k)}" data-pid="${id}" ${left<1?'disabled':''}>${esc(k)}<small>${left} left</small></button>`}).join('')}</div>
+  <button class="btn ghost" data-close>Cancel</button>`;
+  d.showModal();
+}
+function addItem(p,size){
+  if(p.stock[size]-inCart(p.id,size)<1)return;
+  const c=cart.find(x=>x.id===p.id&&x.size===size);
+  c?c.qty++:cart.push({id:p.id,name:p.name,size,price:p.price,qty:1});
+  renderCart();
+}
+
+const hp=s=>{let h=5381;for(const c of s)h=((h<<5)+h+c.charCodeAt(0))|0;return String(h)};
+function logMove(name,size,qty,why){S.log.push({t:new Date().toISOString(),name,size,qty,why});if(S.log.length>500)S.log.shift()}
+const sizeOpts=id=>{const p=S.products.find(x=>x.id===id);return p?Object.keys(p.stock).map(k=>`<option>${esc(k)}</option>`).join(''):''};
+function pay(){
+  const t=totals();
+  if(method==='Cash'&&(+tendered||0)<t.total){alert('Cash received is less than the total.');return}
+  const no=(S.sales.length?S.sales[S.sales.length-1].no:1000)+1;
+  cart.forEach(c=>{const p=S.products.find(x=>x.id===c.id);if(p){p.stock[c.size]-=c.qty;logMove(p.name,c.size,-c.qty,'Sale, bill #'+no)}});
+  
+  const sale={no,t:new Date().toISOString(),cust:{...cust},items:cart.map(c=>({...c})),...t,method,paid:method==='Cash'?+tendered:t.total,taxRate:S.tax};
+  S.sales.push(sale);save();
+  cart=[];disc={t:'%',v:0};tendered='';cust={n:'',p:''};
+  render();receipt(sale);
+}
+function receipt(s){
+  const d=$('#dlg');
+  d.innerHTML=`<div class="rcpt"><h3>${esc(S.shop.name)}</h3><p>${esc(S.shop.addr)}${S.shop.phone?'<br>Tel '+esc(S.shop.phone):''}<br>Bill #${s.no} · ${new Date(s.t).toLocaleString()}${s.cust&&s.cust.n?'<br>Customer: '+esc(s.cust.n)+(s.cust.p?' ('+esc(s.cust.p)+')':''):''}${s.void?'<br><b>VOIDED</b>':''}</p>
+  ${s.items.map(i=>`<div class="row"><span>${i.qty} × ${esc(i.name)} (${esc(i.size)})</span><span>${fmt(i.price*i.qty)}</span></div>`).join('')}
+  <hr><div class="row"><span>Subtotal</span><span>${fmt(s.sub)}</span></div>
+  ${s.d?`<div class="row"><span>Discount</span><span>−${fmt(s.d)}</span></div>`:''}
+  ${s.tax?`<div class="row"><span>Tax (${s.taxRate}%)</span><span>${fmt(s.tax)}</span></div>`:''}
+  <div class="row"><b>Total</b><b>${fmt(s.total)}</b></div>
+  <div class="row"><span>${s.method} paid</span><span>${fmt(s.paid)}</span></div>
+  ${s.method==='Cash'?`<div class="row"><span>Change</span><span>${fmt(s.paid-s.total)}</span></div>`:''}
+  <p style="margin-top:14px">${esc(S.shop.note)}</p></div>
+  <div style="display:flex;gap:8px"><button class="btn ghost" data-close>Close</button><button class="btn" onclick="window.print()">Print bill</button></div>`;
+  d.showModal();
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;const D=t.dataset;
+  if(role!=='owner'&&(D.rm||D.add!==undefined||D.recv!==undefined||D.vd||D.wipe!==undefined||D.setpin!==undefined))return;
+  if(D.v){view=D.v;render()}
+  else if(D.cat!==undefined){cat=D.cat;render()}
+  else if(D.pick)pick(+D.pick);
+  else if(D.size){addItem(S.products.find(x=>x.id===+D.pid),D.size);$('#dlg').close()}
+  else if(D.close!==undefined)$('#dlg').close();
+  else if(D.inc!==undefined){const c=cart[+D.inc],p=S.products.find(x=>x.id===c.id);if(p.stock[c.size]-inCart(c.id,c.size)>0){c.qty++;renderCart()}}
+  else if(D.dec!==undefined){const c=cart[+D.dec];c.qty--;if(c.qty<1)cart.splice(+D.dec,1);renderCart()}
+  else if(D.del!==undefined){cart.splice(+D.del,1);renderCart()}
+  else if(D.m){method=D.m;renderCart()}
+  else if(D.clear!==undefined){cart=[];renderCart()}
+  else if(D.pay!==undefined)pay();
+  else if(D.add!==undefined){
+    const name=$('#nn').value.trim(),price=+$('#np').value,qty=Math.max(0,+$('#nq').value||0);
+    const sizes=$('#ns').value.split(',').map(s=>s.trim()).filter(Boolean);
+    if(!name||!(price>=0)||!$('#np').value||!sizes.length){alert('Enter a name, price and at least one size.');return}
+    const stock={};sizes.forEach(s=>stock[s]=qty);
+    S.products.push({id:S.next++,name,cat:$('#nc').value.trim()||'General',price,stock});if(qty)sizes.forEach(s=>logMove(name,s,qty,'Opening stock'));save();render();
+  }
+  else if(D.rm){if(confirm('Delete this product?')){S.products=S.products.filter(p=>p.id!==+D.rm);cart=cart.filter(c=>c.id!==+D.rm);save();render()}}
+  else if(D.rc){receipt(S.sales.find(s=>s.no===+D.rc))}
+  else if(D.unlock!==undefined){const x=prompt('Enter owner PIN');if(x!==null){if(hp(x.trim())===S.pin){role='owner';render()}else alert('Wrong PIN.')}}
+  else if(D.lock!==undefined){role='cashier';render()}
+  else if(D.setpin!==undefined){const v=$('#pin').value.trim();if(v.length<4){alert('Use at least 4 digits.');return}S.pin=hp(v);save();role='cashier';alert('PIN saved. The app is now in cashier mode. Use Owner login to manage stock.');render()}
+  else if(D.recv!==undefined){const p=S.products.find(x=>x.id===+$('#rp').value),sz=$('#rs').value,n=Math.floor(+$('#rq').value);if(!p||!sz||!(n>0)){alert('Choose an item, a size and a quantity above zero.');return}p.stock[sz]+=n;logMove(p.name,sz,n,$('#rn').value.trim()||'Restock');save();render()}
+  else if(D.vd){const s=S.sales.find(x=>x.no===+D.vd);if(s&&!s.void&&confirm('Void bill #'+s.no+'? The items go back into stock.')){s.void=true;s.items.forEach(i=>{const p=S.products.find(x=>x.id===i.id);if(p&&p.stock[i.size]!==undefined){p.stock[i.size]+=i.qty;logMove(p.name,i.size,i.qty,'Voided bill #'+s.no)}});save();render()}}
+  else if(D.wipe!==undefined){if(confirm('Clear all sales history? Stock levels stay as they are.')){S.sales=[];save();render()}}
+});
+document.addEventListener('input',e=>{
+  const i=e.target;
+  if(i.id==='q'){q=i.value;renderGrid()}
+  else if(i.id==='cn')cust.n=i.value;
+  else if(i.id==='cp')cust.p=i.value;
+  else if(i.id==='tn'){tendered=i.value;$('#chg').textContent=fmt(Math.max(0,(+tendered||0)-totals().total))}
+});
+document.addEventListener('change',e=>{
+  const i=e.target;
+  if(role!=='owner'&&i.id!=='dt'&&i.id!=='dv')return;
+  if(i.id==='dt'){disc.t=i.value;renderCart()}
+  else if(i.id==='dv'){disc.v=Math.max(0,+i.value||0);renderCart()}
+  else if(i.id==='cur'){S.cur=i.value.trim()||'Rs';save()}
+  else if(i.id==='tax'){S.tax=Math.max(0,+i.value||0);save()}
+  else if(i.id==='low'){S.low=Math.max(0,+i.value||0);save();render()}
+  else if(i.id==='sn'){S.shop.name=i.value.trim()||'Lilee';save()}
+  else if(i.id==='sa'){S.shop.addr=i.value;save()}
+  else if(i.id==='sp'){S.shop.phone=i.value;save()}
+  else if(i.id==='sf'){S.shop.note=i.value;save()}
+  else if(i.id==='rp')$('#rs').innerHTML=sizeOpts(+i.value);
+  else if(i.dataset.price){S.products.find(p=>p.id===+i.dataset.price).price=Math.max(0,+i.value||0);save()}
+  else if(i.dataset.st){const[id,sz]=i.dataset.st.split('|');const p=S.products.find(p=>p.id===+id),n=Math.max(0,Math.floor(+i.value||0)),dif=n-p.stock[sz];p.stock[sz]=n;if(dif)logMove(p.name,sz,dif,'Manual adjustment');save();render()}
+});
+render();
+</script>
+</body>
+</html>
